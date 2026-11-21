@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b171d">
+  <meta name="description" content="Check Mate on the Go: a protected file checksum utility for approved users.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://*.supabase.co; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; upgrade-insecure-requests">
+  <title>Check Mate on the Go | DRF</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./config.js"></script>
+  <script defer type="module" src="./src/main.js"></script>
+</head>
+<body>
+  <div class="top-stripe" aria-hidden="true"></div>
+  <header class="topbar shell">
+    <a class="brand" href="./" aria-label="DRF, Check Mate home">
+      <span class="brand-mark" aria-hidden="true">DRF</span>
+    </a>
+    <span class="release-tag"><span class="pulse"></span> REV 0.1 / PROTECTED</span>
+  </header>
+  <main class="shell">
+    <section class="hero">
+      <h1>CHECK MATE <span>ON THE GO<span class="period">.</span></span></h1>
+      <p class="tagline">Select. Checksum. Download.</p>
+    </section>
+    <div class="utility-layout">
+      <section class="utility-card" aria-label="Private checksum tool">
+        <div class="card-top"><h2>DATABASE CHECKSUM</h2></div>
+        <section id="login-panel" aria-label="Technician sign in">
+          <form id="password-form" class="form-section">
+            <label for="password">Access password</label>
+            <input id="password" type="password" autocomplete="current-password" enterkeyhint="go" placeholder="Enter access password" required>
+            <button id="sign-in" class="button primary" type="submit">UNLOCK CHECK MATE <span aria-hidden="true">↗</span></button>
+          </form>
+          <p id="signin-status" class="inline-status" role="status" aria-live="polite"></p>
+        </section>
+        <section id="tool-panel" aria-label="Select and process database" hidden>
+          <div class="signed-in"><span><span class="ready-dot"></span> TECHNICIAN SIGNED IN</span><button type="button" class="text-button" id="signout">SIGN OUT</button></div>
+          <form id="apply-form">
+            <div class="upload-zone">
+              <div class="upload-glyph" aria-hidden="true">⇧</div>
+              <strong>SELECT DATABASE</strong>
+              <p>Choose an already modified <code>.txt</code> file from your device.</p>
+              <label class="button choose" for="database-file">CHOOSE FILE <span aria-hidden="true">↗</span></label>
+              <input id="database-file" type="file" accept=".txt,text/plain" aria-label="Select database text file">
+              <p id="selected-file" class="filename">No file selected</p>
+            </div>
+            <button type="submit" id="apply" class="button primary apply" disabled>APPLY CHECKSUM <span aria-hidden="true">→</span></button>
+          </form>
+          <p id="operation-status" class="inline-status" role="status" aria-live="polite">Select a file to begin.</p>
+          <div id="success" class="success" hidden><span class="success-check" aria-hidden="true">✓</span><div><strong>VALIDATION PASSED</strong><p>Result checked by the private engine.</p></div><a id="download" class="button download" download="database.txt">DOWNLOAD database.txt ↓</a></div>
+        </section>
+        <div class="process-strip"><span>01 &nbsp; SELECT</span><i aria-hidden="true"></i><span>02 &nbsp; CHECKSUM</span><i aria-hidden="true"></i><span>03 &nbsp; DOWNLOAD</span></div>
+      </section>
+    </div>
+  </main>
+  <footer class="shell footer"><span>© DRF</span><span>CHECK MATE ON THE GO / REV 0.1</span><span>BUILT FOR THE FIELD</span></footer>
+</body>
+</html>

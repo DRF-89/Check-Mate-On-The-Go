@@ -1,0 +1,60 @@
+name: Public UI tests and protected GitHub Pages deployment
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - run: npm run build
+      - name: Reject private engine/code/fixtures from public Pages artifact
+        run: |
+          test "$(find dist -type f | wc -l)" -eq 5
+          if grep -R -nEi 'crcByTable|crcByBitwise|STANDARD_CHECKSUM_PREFIX|POLYNOMIAL|0x[[:xdigit:]]{8}' dist; then exit 1; fi
+          if grep -R -nEi 'crcByTable|crcByBitwise|STANDARD_CHECKSUM_PREFIX|POLYNOMIAL|0x[[:xdigit:]]{8}' --include='*.js' --include='*.mjs' --include='*.html' --include='*.md' --include='*.css' . --exclude-dir=.git --exclude-dir=dist; then exit 1; fi
+          if find dist -type f \( -iname '*.txt' -o -iname '*.db' -o -iname '*.zip' \) | grep -q .; then exit 1; fi
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && (vars.PREVIEW_ENABLED == 'true' || (vars.RELEASE_APPROVED == 'true' && vars.BACKEND_VALIDATED == 'true'))
+    needs: [verify]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm test
+      - run: npm run build
+        env:
+          CM_BACKEND_URL: ${{ vars.CM_BACKEND_URL }}
+          CM_LOGIN_URL: ${{ vars.CM_LOGIN_URL }}
+          CM_PREVIEW_ONLY: ${{ vars.PREVIEW_ENABLED }}
+      - name: Reject deployment if backend config absent
+        run: |
+          node --input-type=module -e "import {readFileSync} from 'node:fs';const c=readFileSync('dist/config.js','utf8');if(!c.includes('https://')||!c.includes('loginUrl'))process.exit(1)"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
